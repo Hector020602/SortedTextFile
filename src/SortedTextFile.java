@@ -145,6 +145,87 @@ public class SortedTextFile {
             }
         }
     }
+
+    public Boolean existsElement(String element) throws IOException {
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (line.compareTo(element) > 0) {
+                    return false;
+                } else if (line.equals(element)) {
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            if (in != null) {
+                in.close();
+
+            }
+        }
+    }
+
+    public static void print(String filename) throws IOException {
+        SortedTextFile s = new SortedTextFile(filename);
+        s.print();
+    }
+
+    public static void merge(String filename1, String filename2, String filenameout) throws IOException {
+        BufferedReader input1 = null;
+        BufferedReader input2 = null;
+        PrintWriter output = null;
+
+        try {
+            input1 = new BufferedReader(new FileReader(filename1));
+            input2 = new BufferedReader(new FileReader(filename2));
+            output = new PrintWriter(new FileWriter(filenameout));
+            String line1 = input1.readLine();
+            String line2 = input2.readLine();
+
+            while (line1 != null || line2 != null) {
+                if (line1 == null) {
+                    output.println(line2);
+                    line2 = input2.readLine();
+                } else if (line2 == null) {
+                    output.println(line1);
+                    line1 = input1.readLine();
+                } else if (line1.equals(line2)) {
+                    output.println(line1);
+                    output.println(line2);
+                    line1 = input1.readLine();
+                    line2 = input2.readLine();
+                } else if (line1.compareTo(line2) < 0) {
+                    output.println(line1);
+                    line1 = input1.readLine();
+                } else if (line2.compareTo(line1) < 0) {
+                    output.println(line2);
+                    line2 = input2.readLine();
+                }
+            }
+
+        } finally {
+            if (input1 != null) {
+                input1.close();
+            }
+            if (input2 != null) {
+                input2.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
+    public static void merge(SortedTextFile sorted1,
+                             SortedTextFile sorted2,
+                             String filenameOut) throws IOException {
+        merge(sorted1.getFilename(),
+                sorted2.getFilename(),
+                filenameOut);
+    }
 }
+
 
 
